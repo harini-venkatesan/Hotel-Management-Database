@@ -259,10 +259,10 @@ public class DBProject {
       // ...
       // ...
        try{
-         String query = "INSERT INTO Customer (customerID, fName,lName, Address, phNo, DOB, gender) VALUES ('";
+         String query = "INSERT INTO Customer (customerID, fName,lName, Address, phNo, DOB, gender) VALUES (";
          System.out.print("\tEnter Customer ID: ");
          String input = in.readLine();
-         query += input + "', '";
+         query += input + ", '";
          
          System.out.print("\tEnter First Name: ");
          input = in.readLine();
@@ -274,11 +274,11 @@ public class DBProject {
          
          System.out.print("\tEnter Address: ");
          input = in.readLine();
-         query += input + "', '";
+         query += input + "', ";
          
          System.out.print("\tEnter Phone Number: ");
          input = in.readLine();
-         query += input + "', '";
+         query += input + ", '";
          
          System.out.print("\tEnter Date of Birth: ");
          input = in.readLine();
@@ -302,14 +302,14 @@ public class DBProject {
       // ...
       
       try{
-         String query = "INSERT INTO Room (hotelID, roomNo,roomType) VALUES ('";
+         String query = "INSERT INTO Room (hotelID, roomNo,roomType) VALUES (";
          System.out.print("\tEnter Hotel ID: ");
          String input = in.readLine();
-         query += input + "', '";
+         query += input + ", ";
          
          System.out.print("\tEnter Room No: ");
          input = in.readLine();
-         query += input + "', '";
+         query += input + ", '";
          
          System.out.print("\tEnter Room Type: ");
          input = in.readLine();
@@ -323,16 +323,63 @@ public class DBProject {
    }//end addRoom
 
    public static void addMaintenanceCompany(DBProject esql){
-      // Given maintenance Company details add the maintenance company in the DB
-      // ...
-      // ...
+      try{
+         String query = "INSERT INTO MaintenanceCompany(cmpID, name, address, isCertified) VALUES (";
+         System.out.print("\tEnter Company ID: ");
+         String input = in.readLine();
+         query += input + ", '";
+         
+         System.out.print("\tEnter Name: ");
+         input = in.readLine();
+         query += input + "', ";
+         
+         System.out.print("\tEnter TRUE if Certified: ");
+         input = in.readLine();
+         query += input + ")";
+
+         esql.executeUpdate(query);
+        //System.out.println ("total row(s): " + rowCount);
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+      }
    }//end addMaintenanceCompany
 
    public static void addRepair(DBProject esql){
-	  // Given repair details add repair in the DB
-      // Your code goes here.
-      // ...
-      // ...
+	 try{
+         String query = "INSERT INTO Repair(rID, hotelID, roomNo, mCompany, repairDate, description, repairType) VALUES (";
+         System.out.print("\tEnter Repair ID: ");
+         String input = in.readLine();
+         query += input + ", ";
+         
+         System.out.print("\tEnter Hotel ID: ");
+         input = in.readLine();
+         query += input + ", ";
+         
+         System.out.print("\tEnter Room Number: ");
+         input = in.readLine();
+         query += input + ", ";
+         
+         System.out.print("\tEnter Company ID: ");
+         input = in.readLine();
+         query += input + ", '";
+         
+         System.out.print("\tEnter Repair Date: ");
+         input = in.readLine();
+         query += input + "', '";
+         
+         System.out.print("\tEnter Description: ");
+         input = in.readLine();
+         query += input + "', '";
+         
+         System.out.print("\tEnter Repair Type: ");
+         input = in.readLine();
+         query += input + "')";
+
+         esql.executeUpdate(query);
+        //System.out.println ("total row(s): " + rowCount);
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+      }
    }//end addRepair
 
    public static void bookRoom(DBProject esql){
@@ -340,6 +387,64 @@ public class DBProject {
       // Your code goes here.
       // ...
       // ...
+      try{
+		  
+		 String query = "Select * from Booking";
+		 int bookingID = executeQuery(query) + 1;		// Gives New Booking ID
+	
+		 System.out.print("\tEnter Hotel ID: ");
+         string hotelID = in.readLine();
+			
+		 System.out.print("\tEnter Room Number: ");
+         string roomNo = in.readLine();
+		 
+		 System.out.print("\tEnter Customer's First Name: ");
+         string fname = in.readLine();
+       
+		 System.out.print("\tEnter Customer's Last Name: ");
+         string lname = in.readLine();
+		  
+		  
+		 
+		 
+		  
+		  
+         String query = "INSERT INTO Booking(bID, customer, hotelID, roomNo, BookingDate, noOfPeople, price) VALUES (" + bookingID + ", ";
+         System.out.print("\tEnter hotelID: ");
+         String input = in.readLine();
+         query += input + ", ";
+         
+         System.out.print("\tEnter Hotel ID: ");
+         input = in.readLine();
+         query += input + ", ";
+         
+         System.out.print("\tEnter Room Number: ");
+         input = in.readLine();
+         query += input + ", ";
+         
+         System.out.print("\tEnter Company ID: ");
+         input = in.readLine();
+         query += input + ", '";
+         
+         System.out.print("\tEnter Repair Date: ");
+         input = in.readLine();
+         query += input + "', '";
+         
+         System.out.print("\tEnter Description: ");
+         input = in.readLine();
+         query += input + "', '";
+         
+         System.out.print("\tEnter Repair Type: ");
+         input = in.readLine();
+         query += input + "')";
+
+         esql.executeUpdate(query);
+        //System.out.println ("total row(s): " + rowCount);
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+      }
+      
+      
    }//end bookRoom
 
    public static void assignHouseCleaningToRoom(DBProject esql){
