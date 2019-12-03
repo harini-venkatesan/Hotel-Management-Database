@@ -125,6 +125,82 @@ public class DBProject {
       return rowCount;
    }//end executeQuery
 
+
+public int executeQueryNoPrint (String query) throws SQLException {
+     // creates a statement object
+      Statement stmt = this._connection.createStatement ();
+
+      // issues the query instruction
+      ResultSet rs = stmt.executeQuery (query);
+
+      /*
+       ** obtains the metadata object for the returned result set.  The metadata
+       ** contains row and column info.
+       */
+      ResultSetMetaData rsmd = rs.getMetaData ();
+      int numCol = rsmd.getColumnCount ();
+      int rowCount = 0;
+
+      // iterates through the result set and output them to standard out.
+      boolean outputHeader = true;
+      while (rs.next()){
+	 if(!outputHeader){
+	    for(int i = 1; i <= numCol; i++){
+		System.out.print(rsmd.getColumnName(i) + "\t");
+	    }
+	    System.out.println();
+	    outputHeader = false;
+	 }
+         //for (int i=1; i<=numCol; ++i)
+            //System.out.print (rs.getString (i) + "\t");
+         //System.out.println ();
+         ++rowCount;
+      }//end while
+      stmt.close ();
+      return rowCount;
+   }//end executeQuery
+
+
+
+public String executeQueryReturnData (String query) throws SQLException {
+      // creates a statement object
+      Statement stmt = this._connection.createStatement ();
+      // issues the query instruction
+      ResultSet rs = stmt.executeQuery (query);
+      /*
+       ** obtains the metadata object for the returned result set.  The metadata
+       ** contains row and column info.
+       */
+      ResultSetMetaData rsmd = rs.getMetaData ();
+      int numCol = rsmd.getColumnCount ();
+      String data = "";
+      
+
+      // iterates through the result set and output them to standard out.
+      boolean outputHeader = true;
+      while (rs.next()){
+	 if(outputHeader){
+	    //for(int i = 1; i <= numCol; i++){
+		//System.out.print(rsmd.getColumnName(i) + "\t");
+	    //}
+	    //System.out.println();
+	    outputHeader = false;
+	 }
+	 
+		for (int i=1; i<=numCol; ++i)
+            //System.out.print (rs.getString (i) + "\t");
+            data = rs.getString(i);
+         //System.out.println ();
+		
+
+      }//end while
+      stmt.close ();
+      return data;
+   }//end executeQuery
+
+
+
+
    /**
     * Method to close the physical connection if it is open.
     */
@@ -389,55 +465,38 @@ public class DBProject {
       // ...
       try{
 		  
-		 String query = "Select * from Booking";
-		 int bookingID = executeQuery(query) + 1;		// Gives New Booking ID
-	
+		 String Bookingquery = "Select * from Booking";
+		 int bookingID = esql.executeQueryNoPrint(Bookingquery);		// Gives New Booking ID
+		 System.out.println("\tBooking ID generated: " + Integer.toString(bookingID));
 		 System.out.print("\tEnter Hotel ID: ");
-         string hotelID = in.readLine();
+         String hotelID = in.readLine();
 			
 		 System.out.print("\tEnter Room Number: ");
-         string roomNo = in.readLine();
+         String roomNo = in.readLine();
 		 
 		 System.out.print("\tEnter Customer's First Name: ");
-         string fname = in.readLine();
+         String fname = in.readLine();
        
 		 System.out.print("\tEnter Customer's Last Name: ");
-         string lname = in.readLine();
-		  
-		  
+         String lname = in.readLine();
+         
+		 String custID = (esql.executeQueryReturnData("Select C.customerID From Customer C where c.fname = '" + fname + "' AND c.lname = '" + lname + "' ;"));		//
+         
+        // System.out.println(custID);
 		 
+		 System.out.print("\tEnter Date of Booking (mm/dd/yyyy):  ");
+		 String bookDate = in.readLine();
+		 
+		 System.out.print("\tEnter number of people staying in room:  ");
+		 String noOfPeople = in.readLine();
+		 
+		 System.out.print("\tEnter price of booking:  ");
+		 String priceBooking = in.readLine();
 		 
 		  
-		  
-         String query = "INSERT INTO Booking(bID, customer, hotelID, roomNo, BookingDate, noOfPeople, price) VALUES (" + bookingID + ", ";
-         System.out.print("\tEnter hotelID: ");
-         String input = in.readLine();
-         query += input + ", ";
-         
-         System.out.print("\tEnter Hotel ID: ");
-         input = in.readLine();
-         query += input + ", ";
-         
-         System.out.print("\tEnter Room Number: ");
-         input = in.readLine();
-         query += input + ", ";
-         
-         System.out.print("\tEnter Company ID: ");
-         input = in.readLine();
-         query += input + ", '";
-         
-         System.out.print("\tEnter Repair Date: ");
-         input = in.readLine();
-         query += input + "', '";
-         
-         System.out.print("\tEnter Description: ");
-         input = in.readLine();
-         query += input + "', '";
-         
-         System.out.print("\tEnter Repair Type: ");
-         input = in.readLine();
-         query += input + "')";
-
+         String query = "INSERT INTO Booking(bID, customer, hotelID, roomNo, BookingDate, noOfPeople, price) VALUES ( " + Integer.toString(bookingID) + ", ";
+		 query += custID + ", " +  hotelID + ", " + roomNo + ", '" + bookDate + "', " + noOfPeople + ", " + priceBooking + ")";
+        
          esql.executeUpdate(query);
         //System.out.println ("total row(s): " + rowCount);
       }catch(Exception e){
@@ -452,6 +511,34 @@ public class DBProject {
       // Your code goes here.
       // ...
       // ...
+      
+      try{
+		  
+		 String Assignquery = "Select * from Assigned";
+		 int asgID = esql.executeQueryNoPrint(Assignquery);		// Gives New Assignment ID
+		 System.out.println("\tAssign ID generated: " + Integer.toString(asgID));
+		 
+         String query = "INSERT INTO Assigned(asgID, staffID, hotelID, roomNo) VALUES (";
+         query += Integer.toString(asgID) + ", ";
+         
+         System.out.print("\tEnter Staff SSN: ");
+         String input = in.readLine();
+         query += input + ", ";
+         
+         System.out.print("\tEnter Hotel ID: ");
+         input = in.readLine();
+         query += input + ", ";
+         
+         System.out.print("\tEnter Room Number: ");
+         input = in.readLine();
+         query += input + ")";
+
+         esql.executeUpdate(query);
+        //System.out.println ("total row(s): " + rowCount);
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+      }
+      
    }//end assignHouseCleaningToRoom
    
    public static void repairRequest(DBProject esql){
@@ -459,6 +546,8 @@ public class DBProject {
       // Your code goes here.
       // ...
       // ...
+      
+      
    }//end repairRequest
    
    public static void numberOfAvailableRooms(DBProject esql){
@@ -466,6 +555,27 @@ public class DBProject {
       // Your code goes here.
       // ...
       // ...
+      
+      try{
+		  
+		 System.out.print("\tEnter Hotel ID: ");
+         String hotelID = in.readLine();
+         
+		 String Countquery = "Select roomNo from Room where hotelID = ";
+		 Countquery += hotelID + " EXCEPT";
+		 
+		 Countquery += " (Select roomNo from Booking where hotelID = ";
+		 Countquery += hotelID + " )";
+		 
+		 int total = esql.executeQueryNoPrint(Countquery);		// Gives New Assignment ID
+		 //System.out.println("\tAssign ID generated: " + Integer.toString(asgID));
+		 
+		 System.out.println("\t" + total +" rooms have never been booked in hotelID " + hotelID);
+		 
+        //System.out.println ("total row(s): " + rowCount);
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+      }
    }//end numberOfAvailableRooms
    
    public static void numberOfBookedRooms(DBProject esql){
