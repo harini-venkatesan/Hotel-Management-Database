@@ -603,10 +603,34 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
          System.out.print("\tEnter date: ");
          String date = in.readLine();
          
+         System.out.print("\tEnter description: ");
+         String description = in.readLine();
+         
+         System.out.print("\tEnter repair type: ");
+         String repairType = in.readLine();
          
          
-		 String Countquery = "Select roomNo from Room where hotelID = ";
-		 Countquery += hotelID + " EXCEPT";
+         System.out.print("\tEnter Company Name: ");
+         String companyName = in.readLine();
+         
+         int rows = 0;
+         rows = esql.executeQuery("Select * from MaintenanceCompany where name = "+ companyName);
+         
+         
+         while (rows == 0){
+			System.out.print("\tCompany not found, enter Company Certified Name: ");
+			companyName = in.readLine();
+			rows = esql.executeQuery("Select * from MaintenanceCompany where name = "+ companyName);  
+		 }
+         
+         String compID = esql.executeQueryReturnData("Select cmpID from MaintenanceCompany where name = " + companyName);
+         
+         
+         System.out.println(compID);
+         
+		// String Countquery = "Select roomNo from Room where hotelID = ";
+		// Countquery += hotelID + " EXCEPT";
+		 
 		 
 		 //Countquery += " (Select roomNo from Booking where hotelID = ";
 		// Countquery += hotelID + " )";
@@ -746,6 +770,27 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
       // Your code goes here.
       // ...
       // ...
+      try{
+		System.out.print("\tEnter K value: ");
+		String K = in.readLine();
+      
+		System.out.print("\tEnter Customer first name: ");
+		String fname = in.readLine();
+		
+		System.out.print("\tEnter Customer last name: ");
+		String lname = in.readLine();
+		
+		String custID = (esql.executeQueryReturnData("Select C.customerID From Customer C where c.fname = '" + fname + "' AND c.lname = '" + lname + "' "));
+	
+
+		String query = "Select * from booking  where customer = " + custID + " Order by price desc limit " + K;		
+		System.out.print("\n");
+		esql.executeQueryReturnDataMultiple(query);
+		
+	}catch(Exception e){
+         System.err.println (e.getMessage());
+     } 
+      
    }//end topKHighestPriceBookingsForACustomer
    
    public static void totalCostForCustomer(DBProject esql){
@@ -753,6 +798,37 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
       // Your code goes here.
       // ...
       // ...
+      try{
+		System.out.print("\tEnter hotelID: ");
+		String hotelID = in.readLine();
+      
+		System.out.print("\tEnter Customer first name: ");
+		String fname = in.readLine();
+		
+		System.out.print("\tEnter Customer last name: ");
+		String lname = in.readLine();
+		
+		System.out.print("\tEnter start date: ");
+		String startDate = in.readLine();
+		
+		System.out.print("\tEnter end date: ");
+		String endDate = in.readLine();
+		
+		
+		String custID = (esql.executeQueryReturnData("Select C.customerID From Customer C where c.fname = '" + fname + "' AND c.lname = '" + lname + "' "));
+	
+
+		String query = "Select SUM(price) from booking  where customer = " + custID + " AND hotelID =" + hotelID + " AND bookingDate >= '" + startDate + "' AND bookingDate <= '" + endDate + "' GROUP BY customer";		
+		System.out.print("\n");
+		esql.executeQueryReturnDataMultiple(query);
+		
+	}catch(Exception e){
+         System.err.println (e.getMessage());
+     } 
+      
+      
+      
+      
    }//end totalCostForCustomer
    
    public static void listRepairsMade(DBProject esql){
