@@ -836,6 +836,24 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
       // Your code goes here.
       // ...
       // ...
+      
+      try{
+		System.out.print("\tEnter Company name: ");
+		String companyName = in.readLine();
+  
+		
+		
+		String cmpID = (esql.executeQueryReturnData("Select cmpID From MaintenanceCompany where name = '" + companyName + "' "));
+	
+
+		String query = "Select rID, hotelID, repairtype, roomNo from repair  where mCompany = " + cmpID ;		
+		System.out.print("\n");
+		esql.executeQueryReturnDataMultiple(query);
+		
+	}catch(Exception e){
+         System.err.println (e.getMessage());
+     } 
+      
    }//end listRepairsMade
    
    public static void topKMaintenanceCompany(DBProject esql){
@@ -843,7 +861,20 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
       // Your code goes here.
       // ...
       // ...
-   }//end topKMaintenanceCompany
+      
+      try{
+		System.out.print("\tEnter K: ");
+		String K = in.readLine();
+		String query = "Select Count(*), m.name from repair r, MaintenanceCompany m where r.mCompany = m.cmpID group by m.name order by count desc limit " + K ;		
+		System.out.print("\n");
+		esql.executeQueryReturnDataMultiple(query);
+		
+	}catch(Exception e){
+         System.err.println (e.getMessage());
+     } 
+      
+   }
+      //end topKMaintenanceCompany
    
    public static void numberOfRepairsForEachRoomPerYear(DBProject esql){
 	  // Given a hotelID, roomNo, get the count of repairs per year
