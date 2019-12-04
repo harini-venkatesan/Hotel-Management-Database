@@ -706,7 +706,7 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
 	  query
       */
       
-      
+      //line
       
    }//end listHotelRoomBookingsForAWeek
    
