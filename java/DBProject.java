@@ -197,6 +197,42 @@ public String executeQueryReturnData (String query) throws SQLException {
       stmt.close ();
       return data;
    }//end executeQuery
+   
+   
+   
+public void executeQueryReturnDataMultiple (String query) throws SQLException {
+      // creates a statement object
+      Statement stmt = this._connection.createStatement ();
+
+      // issues the query instruction
+      ResultSet rs = stmt.executeQuery (query);
+
+      /*
+       ** obtains the metadata object for the returned result set.  The metadata
+       ** contains row and column info.
+       */
+      ResultSetMetaData rsmd = rs.getMetaData ();
+      int numCol = rsmd.getColumnCount ();
+      int rowCount = 0;
+
+      // iterates through the result set and output them to standard out.
+      boolean outputHeader = true;
+      while (rs.next()){
+	 if(outputHeader){
+	    for(int i = 1; i <= numCol; ++i){
+		System.out.print(rsmd.getColumnName(i) + "\t");
+	    }
+	    System.out.println();
+	    outputHeader = false;
+	 }
+         for (int i=1; i<=numCol; ++i)
+            System.out.print (rs.getString (i) + "\t");
+         System.out.println ();
+         ++rowCount;
+      }//end while
+      stmt.close ();
+     //return rowCount;
+   }//end executeQuery
 
 
 
@@ -480,9 +516,9 @@ public String executeQueryReturnData (String query) throws SQLException {
 		 System.out.print("\tEnter Customer's Last Name: ");
          String lname = in.readLine();
          
-		 String custID = (esql.executeQueryReturnData("Select C.customerID From Customer C where c.fname = '" + fname + "' AND c.lname = '" + lname + "' ;"));		//
+		 String custID = (esql.executeQueryReturnData("Select C.customerID From Customer C where c.fname = '" + fname + "' AND c.lname = '" + lname + "' "));		//
          
-        // System.out.println(custID);
+    
 		 
 		 System.out.print("\tEnter Date of Booking (mm/dd/yyyy):  ");
 		 String bookDate = in.readLine();
@@ -496,9 +532,12 @@ public String executeQueryReturnData (String query) throws SQLException {
 		  
          String query = "INSERT INTO Booking(bID, customer, hotelID, roomNo, BookingDate, noOfPeople, price) VALUES ( " + Integer.toString(bookingID) + ", ";
 		 query += custID + ", " +  hotelID + ", " + roomNo + ", '" + bookDate + "', " + noOfPeople + ", " + priceBooking + ")";
+		 
+		
+		 
         
          esql.executeUpdate(query);
-        //System.out.println ("total row(s): " + rowCount);
+    
       }catch(Exception e){
          System.err.println (e.getMessage());
       }
@@ -547,6 +586,42 @@ public String executeQueryReturnData (String query) throws SQLException {
       // ...
       // ...
       
+      try{
+		  
+		 System.out.print("\tEnter Hotel ID: ");
+         String hotelID = in.readLine();
+         
+         System.out.print("\tEnter Staff SSN: ");
+         String managerID = in.readLine();
+         
+         System.out.print("\tEnter Room Number: ");
+         String roomNo = in.readLine();
+         
+         System.out.print("\tEnter repairID: ");
+         String repairID = in.readLine();
+         
+         System.out.print("\tEnter date: ");
+         String date = in.readLine();
+         
+         
+         
+		 String Countquery = "Select roomNo from Room where hotelID = ";
+		 Countquery += hotelID + " EXCEPT";
+		 
+		 //Countquery += " (Select roomNo from Booking where hotelID = ";
+		// Countquery += hotelID + " )";
+		 
+		 //int total = esql.executeQueryNoPrint(Countquery);		// Gives New Assignment ID
+		 //System.out.println("\tAssign ID generated: " + Integer.toString(asgID));
+		 
+		 //System.out.println("\t" + total +" rooms have never been booked in hotelID " + hotelID);
+		 
+        //System.out.println ("total row(s): " + rowCount);
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+      }
+      
+      
       
    }//end repairRequest
    
@@ -561,10 +636,10 @@ public String executeQueryReturnData (String query) throws SQLException {
 		 System.out.print("\tEnter Hotel ID: ");
          String hotelID = in.readLine();
          
-		 String Countquery = "Select roomNo from Room where hotelID = ";
+		 String Countquery = "Select DISTINCT roomNo from Room where hotelID = ";
 		 Countquery += hotelID + " EXCEPT";
 		 
-		 Countquery += " (Select roomNo from Booking where hotelID = ";
+		 Countquery += " (Select DISTINCT roomNo from Booking where hotelID = ";
 		 Countquery += hotelID + " )";
 		 
 		 int total = esql.executeQueryNoPrint(Countquery);		// Gives New Assignment ID
@@ -583,6 +658,24 @@ public String executeQueryReturnData (String query) throws SQLException {
       // Your code goes here.
       // ...
       // ...
+      
+      try{
+	   System.out.print("\tEnter Hotel ID: ");
+       String hotelID = in.readLine();
+       
+       String Countquery = "Select DISTINCT roomNo from Booking where hotelID = ";
+	   Countquery += hotelID;
+	   
+	   int total = esql.executeQueryNoPrint(Countquery);		// Gives New Assignment ID
+		 //System.out.println("\tAssign ID generated: " + Integer.toString(asgID));
+		 
+		 System.out.println("\t" + total +" rooms are booked in hotelID " + hotelID);
+	   
+	   
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+
+	}
    }//end numberOfBookedRooms
    
    public static void listHotelRoomBookingsForAWeek(DBProject esql){
@@ -590,6 +683,31 @@ public String executeQueryReturnData (String query) throws SQLException {
       // Your code goes here.
       // ...
       // ...
+      try{
+		System.out.print("\tEnter Hotel ID: ");
+		String hotelID = in.readLine();
+      
+		System.out.print("\tEnter date of week: ");
+		String date = in.readLine();
+		
+		String query = "Select DISTINCT * from Booking where hotelID = ";
+		query += hotelID;
+		query += " AND bookingDate >= '" + date + "' AND bookingDate -7  <= '" + date + "' " ;
+		
+		System.out.print("\n");
+		esql.executeQueryReturnDataMultiple(query);
+		
+	}catch(Exception e){
+         System.err.println (e.getMessage());
+ 
+	}
+      /*String Countquery = "Select DISTINCT roomNo from Booking where hotelID = ";
+	  query += hotelID;
+	  query
+      */
+      
+      
+      
    }//end listHotelRoomBookingsForAWeek
    
    public static void topKHighestRoomPriceForADateRange(DBProject esql){
@@ -597,6 +715,30 @@ public String executeQueryReturnData (String query) throws SQLException {
       // Your code goes here.
       // ...
       // ...
+      try{
+		System.out.print("\tEnter K value: ");
+		String K = in.readLine();
+      
+		System.out.print("\tEnter start date: ");
+		String startDate = in.readLine();
+		
+		
+		System.out.print("\tEnter end date: ");
+		String endDate = in.readLine();
+		
+
+		String query = "Select * from Booking where bookingDate >= '" + startDate + "' AND bookingDate <= '" + endDate + "' Order by price desc limit " + K;		
+		System.out.print("\n");
+		esql.executeQueryReturnDataMultiple(query);
+		
+	}catch(Exception e){
+         System.err.println (e.getMessage());
+ 
+	}
+      
+      
+      
+      
    }//end topKHighestRoomPriceForADateRange
    
    public static void topKHighestPriceBookingsForACustomer(DBProject esql){
