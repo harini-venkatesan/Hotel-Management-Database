@@ -588,14 +588,14 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
       
       try{
 		  
-		 System.out.print("\tEnter Hotel ID: ");
-         String hotelID = in.readLine();
-         
+		 String Requestquery = "Select * from Request";
+		 int reqID = esql.executeQueryNoPrint(Requestquery);		// Gives New Booking ID
+		 System.out.println("\tRequest ID generated: " + Integer.toString(reqID));
+		 
+		  
          System.out.print("\tEnter Staff SSN: ");
          String managerID = in.readLine();
          
-         System.out.print("\tEnter Room Number: ");
-         String roomNo = in.readLine();
          
          System.out.print("\tEnter repairID: ");
          String repairID = in.readLine();
@@ -606,41 +606,22 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
          System.out.print("\tEnter description: ");
          String description = in.readLine();
          
-         System.out.print("\tEnter repair type: ");
-         String repairType = in.readLine();
-         
-         
-         System.out.print("\tEnter Company Name: ");
-         String companyName = in.readLine();
          
          int rows = 0;
-         rows = esql.executeQuery("Select * from MaintenanceCompany where name = "+ companyName);
+         //rows = esql.executeQuery("Select * from MaintenanceCompany where name = "+ companyName);
          
+        
+		// int hotelID = esql.executeQuery("Select hotelID from Repair where rID = "+ repairID);
+		 //checking for valid manager in the hotel 
+		// while (rows == 0){
+		//	System.out.print("\tInvalid manager ID. Enter staff SSN: ");
+		//	managerID = in.readLine();
+		//	rows = esql.executeQuery("Select * from Hotel where manager = "+ managerID + " AND hotelID = " + Integer.toString(hotelID));  
+		// }
          
-         while (rows == 0){
-			System.out.print("\tCompany not found, enter Company Certified Name: ");
-			companyName = in.readLine();
-			rows = esql.executeQuery("Select * from MaintenanceCompany where name = "+ companyName);  
-		 }
-         
-         String compID = esql.executeQueryReturnData("Select cmpID from MaintenanceCompany where name = " + companyName);
-         
-         
-         System.out.println(compID);
-         
-		// String Countquery = "Select roomNo from Room where hotelID = ";
-		// Countquery += hotelID + " EXCEPT";
-		 
-		 
-		 //Countquery += " (Select roomNo from Booking where hotelID = ";
-		// Countquery += hotelID + " )";
-		 
-		 //int total = esql.executeQueryNoPrint(Countquery);		// Gives New Assignment ID
-		 //System.out.println("\tAssign ID generated: " + Integer.toString(asgID));
-		 
-		 //System.out.println("\t" + total +" rooms have never been booked in hotelID " + hotelID);
-		 
-        //System.out.println ("total row(s): " + rowCount);
+         String query = "INSERT INTO Request(reqID, managerID, repairID, requestDate, description) VALUES (" + reqID + ", " + managerID + ", " + repairID + ", '" + date + "', '" + description + "')";
+         esql.executeUpdate(query);
+
       }catch(Exception e){
          System.err.println (e.getMessage());
       }
