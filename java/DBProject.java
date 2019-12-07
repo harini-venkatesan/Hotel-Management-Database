@@ -673,12 +673,16 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
          String input = in.readLine();
          
          
-         int rows = esql.executeQueryNoPrint("Select * from staff where ssn = "+ input);
+         int rows = esql.executeQueryNoPrint("Select * from staff where ssn = "+ input + " and ROLE = 'HouseCleaning'" );
 		 while (rows == 0){
 			System.out.print("\tInvalid SSN. Enter Staff SSN: ");
 			input = in.readLine();
-		    rows = esql.executeQueryNoPrint("Select * from staff where ssn = "+ input);
+		    rows = esql.executeQueryNoPrint("Select * from staff where ssn = "+ input  + " and ROLE = 'HouseCleaning'");
 		 }
+         
+
+
+
 
 		query += input + ", ";
 		
@@ -876,9 +880,7 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
       
 		System.out.print("\tEnter date of week (mm/dd/yyyy): ");
 		String date = in.readLine();
-		
-		 System.out.print("\tEnter date: ");
-         date = in.readLine();         
+		  
          while (date.charAt(2) != '/' || date.charAt(5) != '/'){
 			System.out.print("\tInvalid date format. Enter Date (mm/dd/yyyy): ");
 			date = in.readLine();

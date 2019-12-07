@@ -1,3 +1,14 @@
+DROP INDEX IF EXISTS indexHotel;  
+DROP INDEX IF EXISTS indexStaff ;
+DROP INDEX if exists  indexRoom ;
+DROP INDEX if exists  indexCustomer ;
+DROP INDEX if exists  indexMaintenanceCompany ;
+DROP INDEX if exists indexBooking ;
+DROP INDEX if exists  indexRepair  ;
+DROP INDEX if exists  indexRequest ;
+DROP INDEX if exists  indexAssigned  ;
+
+
 CREATE INDEX indexHotel
 ON Hotel
 (hotelID);
