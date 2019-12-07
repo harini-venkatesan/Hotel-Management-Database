@@ -406,7 +406,7 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
          
 		 //checking for valid manager in the hotel 
 		 while (input.charAt(2) != '/' || input.charAt(5) != '/'){
-			System.out.print("\tInvalid date format. Enter Date of Birth (mm/dd/yyyy): ");
+			System.out.print("\tInvalid date format. Enter Date  (mm/dd/yyyy): ");
 			input = in.readLine();
 		 }
          
@@ -521,7 +521,7 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
 		 }
         
          
-         query += input + ", ";
+         query += roomNo + ", ";
          
          
          System.out.print("\tEnter Company ID: ");
@@ -542,7 +542,7 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
          input = in.readLine();
          
          while (input.charAt(2) != '/' || input.charAt(5) != '/'){
-			System.out.print("\tInvalid date format. Enter Date of Birth (mm/dd/yyyy): ");
+			System.out.print("\tInvalid date format. Enter Date (mm/dd/yyyy): ");
 			input = in.readLine();
 		 }
          
@@ -605,7 +605,7 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
          String lname = in.readLine();
          
          rows = 0;
-		 rows = esql.executeQueryNoPrint("Select * from customer where fname = "+ fname + " AND c.lname = " + lname );
+		 rows = esql.executeQueryNoPrint("Select * from customer where fname = '"+ fname + "' AND lname = '" + lname + "'" );
 		 
 		 while (rows == 0){
 			System.out.print("\tInvalid Name. ");
@@ -616,8 +616,7 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
 			System.out.print("\tEnter Customer's Last Name: ");
 			lname = in.readLine();
 			
-			roomNo = in.readLine();
-		    rows = esql.executeQueryNoPrint("Select * from customer where fname = "+ fname + " AND c.lname = " + lname );
+		    rows = esql.executeQueryNoPrint("Select * from customer where fname = '"+ fname + "' AND lname = '" + lname + "'" );
 		 }
          
 		 String custID = (esql.executeQueryReturnData("Select C.customerID From Customer C where c.fname = '" + fname + "' AND c.lname = '" + lname + "' "));		//
@@ -628,7 +627,7 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
 		 
 		     
          while (bookDate.charAt(2) != '/' || bookDate.charAt(5) != '/'){
-			System.out.print("\tInvalid date format. Enter Date of Birth (mm/dd/yyyy): ");
+			System.out.print("\tInvalid date format. Enter (mm/dd/yyyy): ");
 			bookDate = in.readLine();
 		 }
          
@@ -645,7 +644,7 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
 		 
 		
 		 
-        
+        //System.out.println(query);
          esql.executeUpdate(query);
     
       }catch(Exception e){
@@ -672,15 +671,42 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
          
          System.out.print("\tEnter Staff SSN: ");
          String input = in.readLine();
-         query += input + ", ";
          
-         System.out.print("\tEnter Hotel ID: ");
-         input = in.readLine();
-         query += input + ", ";
          
-         System.out.print("\tEnter Room Number: ");
-         input = in.readLine();
-         query += input + ")";
+         int rows = esql.executeQueryNoPrint("Select * from staff where ssn = "+ input);
+		 while (rows == 0){
+			System.out.print("\tInvalid SSN. Enter Staff SSN: ");
+			input = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select * from staff where ssn = "+ input);
+		 }
+
+		query += input + ", ";
+		
+        System.out.print("\tEnter Hotel ID: ");
+        input = in.readLine();
+         
+         
+         rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ input);
+		 while (rows == 0){
+			System.out.print("\tInvalid Hotel ID. Enter hotel ID: ");
+			input = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ input);
+		 }
+	 
+         query += input + ", ";     
+         
+		 System.out.print("\tEnter Room Number: ");
+         String roomNo = in.readLine();
+         rows = 0;
+		 rows = esql.executeQueryNoPrint("Select roomNo from room where roomno = "+ roomNo + " AND HotelID = " + input);
+		 
+		 while (rows == 0){
+			System.out.print("\tInvalid Room No. Enter Room number: ");
+			input = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select roomNo from room where roomno = "+ roomNo + " AND HotelID = " + input);
+		 }
+        
+         query += roomNo + ")";
 
          esql.executeUpdate(query);
         //System.out.println ("total row(s): " + rowCount);
@@ -706,18 +732,38 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
          System.out.print("\tEnter Staff SSN: ");
          String managerID = in.readLine();
          
+         int rows = esql.executeQueryNoPrint("Select * from staff where ssn = "+ managerID + " and Role = 'Manager'");
+		 while (rows == 0){
+			System.out.print("\tInvalid SSN. Enter Staff SSN: ");
+			managerID = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select * from staff where ssn = "+ managerID + " and Role = 'Manager'");
+		 }
          
+    
          System.out.print("\tEnter repairID: ");
          String repairID = in.readLine();
          
+         
+         rows = esql.executeQueryNoPrint("Select * from repair where rid = "+ repairID);
+		 while (rows == 0){
+			System.out.print("\tInvalid repair ID. Enter Repair ID: ");
+			repairID = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select * from repair where rid = "+ repairID);
+		 }
+         
+         
          System.out.print("\tEnter date: ");
-         String date = in.readLine();
+         String date = in.readLine();         
+         while (date.charAt(2) != '/' || date.charAt(5) != '/'){
+			System.out.print("\tInvalid date format. Enter Date  (mm/dd/yyyy): ");
+			date = in.readLine();
+		 }
+         
          
          System.out.print("\tEnter description: ");
          String description = in.readLine();
          
-         
-         int rows = 0;
+       
          //rows = esql.executeQuery("Select * from MaintenanceCompany where name = "+ companyName);
          
         //   int rows = 0;
@@ -751,6 +797,15 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
 		 System.out.print("\tEnter Hotel ID: ");
          String hotelID = in.readLine();
          
+         int rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ hotelID);
+		 while (rows == 0){
+			System.out.print("\tInvalid Hotel ID. Enter hotel ID: ");
+			hotelID = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ hotelID);
+		 }
+         
+         
+         
 		 String Countquery = "Select DISTINCT roomNo from Room where hotelID = ";
 		 Countquery += hotelID + " EXCEPT";
 		 
@@ -778,6 +833,15 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
 	   System.out.print("\tEnter Hotel ID: ");
        String hotelID = in.readLine();
        
+       
+       int rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ hotelID);
+		 while (rows == 0){
+			System.out.print("\tInvalid Hotel ID. Enter hotel ID: ");
+			hotelID = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ hotelID);
+		 }
+       
+       
        String Countquery = "Select DISTINCT roomNo from Booking where hotelID = ";
 	   Countquery += hotelID;
 	   
@@ -801,9 +865,24 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
       try{
 		System.out.print("\tEnter Hotel ID: ");
 		String hotelID = in.readLine();
+		
+		
+		 int rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ hotelID);
+		 while (rows == 0){
+			System.out.print("\tInvalid Hotel ID. Enter hotel ID: ");
+			hotelID = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ hotelID);
+		 }
       
-		System.out.print("\tEnter date of week: ");
+		System.out.print("\tEnter date of week (mm/dd/yyyy): ");
 		String date = in.readLine();
+		
+		 System.out.print("\tEnter date: ");
+         date = in.readLine();         
+         while (date.charAt(2) != '/' || date.charAt(5) != '/'){
+			System.out.print("\tInvalid date format. Enter Date (mm/dd/yyyy): ");
+			date = in.readLine();
+		 }
 		
 		String query = "Select DISTINCT * from Booking where hotelID = ";
 		query += hotelID;
@@ -816,12 +895,8 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
          System.err.println (e.getMessage());
  
 	}
-      /*String Countquery = "Select DISTINCT roomNo from Booking where hotelID = ";
-	  query += hotelID;
-	  query
-      */
-      
-      //line
+ 
+
       
    }//end listHotelRoomBookingsForAWeek
    
@@ -836,10 +911,22 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
       
 		System.out.print("\tEnter start date: ");
 		String startDate = in.readLine();
+        
+         while (startDate.charAt(2) != '/' || startDate.charAt(5) != '/'){
+			System.out.print("\tInvalid date format. Enter Date (mm/dd/yyyy): ");
+			startDate = in.readLine();
+		 }
 		
 		
 		System.out.print("\tEnter end date: ");
 		String endDate = in.readLine();
+		
+      
+         while (endDate.charAt(2) != '/' || endDate.charAt(5) != '/'){
+			System.out.print("\tInvalid date format. Enter Date  (mm/dd/yyyy): ");
+			endDate = in.readLine();
+		 }
+		
 		
 
 		String query = "Select * from Booking where bookingDate >= '" + startDate + "' AND bookingDate <= '" + endDate + "' Order by price desc limit " + K;		
@@ -871,10 +958,28 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
 		System.out.print("\tEnter Customer last name: ");
 		String lname = in.readLine();
 		
+		
+		 int rows = 0;
+		 rows = esql.executeQueryNoPrint("Select * from customer where fname = '"+ fname + "' AND lname = '" + lname + "'" );
+		 
+		 while (rows == 0){
+			System.out.print("\tInvalid Name. ");
+			
+			System.out.print("\tEnter Customer's First Name: ");
+			fname = in.readLine();
+       
+			System.out.print("\tEnter Customer's Last Name: ");
+			lname = in.readLine();
+			
+		    rows = esql.executeQueryNoPrint("Select * from customer where fname = '"+ fname + "' AND lname = '" + lname + "'" );
+		 }
+		
+		
+		
 		String custID = (esql.executeQueryReturnData("Select C.customerID From Customer C where c.fname = '" + fname + "' AND c.lname = '" + lname + "' "));
 	
 
-		String query = "Select * from booking  where customer = " + custID + " Order by price desc limit " + K;		
+		String query = "Select price from booking  where customer = " + custID + " Order by price desc limit " + K;		
 		System.out.print("\n");
 		esql.executeQueryReturnDataMultiple(query);
 		
@@ -892,6 +997,14 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
       try{
 		System.out.print("\tEnter hotelID: ");
 		String hotelID = in.readLine();
+		
+		
+		 int rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ hotelID);
+		 while (rows == 0){
+			System.out.print("\tInvalid Hotel ID. Enter hotel ID: ");
+			hotelID = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ hotelID);
+		 }
       
 		System.out.print("\tEnter Customer first name: ");
 		String fname = in.readLine();
@@ -899,12 +1012,38 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
 		System.out.print("\tEnter Customer last name: ");
 		String lname = in.readLine();
 		
+		 rows = 0;
+		 rows = esql.executeQueryNoPrint("Select * from customer where fname = '"+ fname + "' AND lname = '" + lname + "'" );
+		 
+		 while (rows == 0){
+			System.out.print("\tInvalid Name. ");
+			
+			System.out.print("\tEnter Customer's First Name: ");
+			fname = in.readLine();
+       
+			System.out.print("\tEnter Customer's Last Name: ");
+			lname = in.readLine();
+			
+		    rows = esql.executeQueryNoPrint("Select * from customer where fname = '"+ fname + "' AND lname = '" + lname + "'" );
+		 }
+	
 		System.out.print("\tEnter start date: ");
 		String startDate = in.readLine();
+        
+         while (startDate.charAt(2) != '/' || startDate.charAt(5) != '/'){
+			System.out.print("\tInvalid date format. Enter Date (mm/dd/yyyy): ");
+			startDate = in.readLine();
+		 }
+		
 		
 		System.out.print("\tEnter end date: ");
 		String endDate = in.readLine();
 		
+      
+         while (endDate.charAt(2) != '/' || endDate.charAt(5) != '/'){
+			System.out.print("\tInvalid date format. Enter Date  (mm/dd/yyyy): ");
+			endDate = in.readLine();
+		 }
 		
 		String custID = (esql.executeQueryReturnData("Select C.customerID From Customer C where c.fname = '" + fname + "' AND c.lname = '" + lname + "' "));
 	
@@ -932,7 +1071,15 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
 		System.out.print("\tEnter Company name: ");
 		String companyName = in.readLine();
   
-		
+		  int rows = 0;
+		 rows = esql.executeQueryNoPrint("Select * from maintenanceCompany where name = '"+ companyName + "'");
+		 
+		 while (rows == 0){
+			System.out.print("\tInvalid CompanyID. Enter CompanyID: ");
+			companyName = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select * from maintenanceCompany where name = '"+ companyName + "'");
+		 }
+		 
 		
 		String cmpID = (esql.executeQueryReturnData("Select cmpID From MaintenanceCompany where name = '" + companyName + "' "));
 	
@@ -972,6 +1119,39 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
       // Your code goes here.
       // ...
       // ...
+      
+      try{
+      System.out.print("\tEnter hotelID: ");
+		String hotelID = in.readLine();
+		
+		 int rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ hotelID);
+		 while (rows == 0){
+			System.out.print("\tInvalid Hotel ID. Enter hotel ID: ");
+			hotelID = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ hotelID);
+		 }
+		
+ 
+		System.out.print("\tEnter roomNo: ");
+		String roomNo = in.readLine();
+	
+		rows = esql.executeQueryNoPrint("Select roomNo from room where roomno = "+ roomNo + " AND HotelID = " + hotelID);
+		 
+		 while (rows == 0){
+			System.out.print("\tInvalid Room No. Enter Room number: ");
+			roomNo = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select roomNo from room where roomno = "+ roomNo + " AND HotelID = " + hotelID);
+		 }
+	
+ 
+	String query = "Select Count(*), EXTRACT(Year from repairDate) from repair where hotelID = " + hotelID + " AND roomno = " + roomNo + "Group by EXTRACT(Year from repairDate)";
+	esql.executeQueryReturnDataMultiple(query);
+      }
+      catch(Exception e){
+         System.err.println (e.getMessage());
+     } 
+
+      
    }//end listRepairsMade
 
 }//end DBProject
