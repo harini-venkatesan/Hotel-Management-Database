@@ -372,12 +372,17 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
       // ...
        try{
          String query = "INSERT INTO Customer (customerID, fName,lName, Address, phNo, DOB, gender) VALUES (";
-         System.out.print("\tEnter Customer ID: ");
-         String input = in.readLine();
-         query += input + ", '";
+         
+         String customerID = Integer.toString(esql.executeQueryNoPrint("Select * from Customer"));
+		 query += customerID + ", '";
+         System.out.println("Customer ID generated: "+ customerID);
+		 
+
+        
+         
          
          System.out.print("\tEnter First Name: ");
-         input = in.readLine();
+         String input = in.readLine();
          query += input + "', '";
          
          System.out.print("\tEnter Last Name: ");
@@ -392,14 +397,24 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
          input = in.readLine();
          query += input + ", '";
          
-         System.out.print("\tEnter Date of Birth: ");
+         
+         System.out.print("\tEnter Date of Birth (mm/dd/yyyy): ");
          input = in.readLine();
          query += input + "', '";
+         
+         
+         
+		 //checking for valid manager in the hotel 
+		 while (input.charAt(2) != '/' || input.charAt(5) != '/'){
+			System.out.print("\tInvalid date format. Enter Date of Birth (mm/dd/yyyy): ");
+			input = in.readLine();
+		 }
+         
          
          System.out.print("\tEnter Gender: ");
          input = in.readLine();
          query += input + "')";
-
+			//System.out.println(query);
          esql.executeUpdate(query);
          //System.out.println ("total row(s): " + rowCount);
       }catch(Exception e){
@@ -417,7 +432,20 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
          String query = "INSERT INTO Room (hotelID, roomNo,roomType) VALUES (";
          System.out.print("\tEnter Hotel ID: ");
          String input = in.readLine();
+  
+         int rows = 0;
+		 rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ input);
+		 //checking for valid manager in the hotel 
+	
+		 while (rows == 0){
+			System.out.print("\tInvalid Hotel ID. Enter hotel ID: ");
+			input = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ input);
+		 }
+         
          query += input + ", ";
+         
+         
          
          System.out.print("\tEnter Room No: ");
          input = in.readLine();
@@ -458,27 +486,68 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
 
    public static void addRepair(DBProject esql){
 	 try{
+		 
+		 
          String query = "INSERT INTO Repair(rID, hotelID, roomNo, mCompany, repairDate, description, repairType) VALUES (";
-         System.out.print("\tEnter Repair ID: ");
-         String input = in.readLine();
+         
+         
+       
+         String input = Integer.toString(esql.executeQueryNoPrint("Select * from repair"));
+         System.out.print("\tRepair ID generated: " + input);
          query += input + ", ";
          
          System.out.print("\tEnter Hotel ID: ");
          input = in.readLine();
+         
+          int rows = 0;
+		 rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ input);
+		 while (rows == 0){
+			System.out.print("\tInvalid Hotel ID. Enter hotel ID: ");
+			input = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ input);
+		 }
+         
+         query += input + ", ";
+   
+         System.out.print("\tEnter Room Number: ");
+         String roomNo = in.readLine();
+         rows = 0;
+		 rows = esql.executeQueryNoPrint("Select roomNo from room where roomno = "+ roomNo + " AND HotelID = " + input);
+		 
+		 while (rows == 0){
+			System.out.print("\tInvalid Room No. Enter Room no: ");
+			input = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select roomNo from room where roomno = "+ roomNo + " AND HotelID = " + input);
+		 }
+        
+         
          query += input + ", ";
          
-         System.out.print("\tEnter Room Number: ");
-         input = in.readLine();
-         query += input + ", ";
          
          System.out.print("\tEnter Company ID: ");
          input = in.readLine();
+ 
+         rows = 0;
+		 rows = esql.executeQueryNoPrint("Select * from maintenanceCompany where cmpid = "+ input);
+		 
+		 while (rows == 0){
+			System.out.print("\tInvalid CompanyID. Enter CompanyID: ");
+			input = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select * from maintenanceCompany where cmpid = "+ input);
+		 }
+		 
          query += input + ", '";
          
          System.out.print("\tEnter Repair Date: ");
          input = in.readLine();
-         query += input + "', '";
          
+         while (input.charAt(2) != '/' || input.charAt(5) != '/'){
+			System.out.print("\tInvalid date format. Enter Date of Birth (mm/dd/yyyy): ");
+			input = in.readLine();
+		 }
+         
+         query += input + "', '";
+ 
          System.out.print("\tEnter Description: ");
          input = in.readLine();
          query += input + "', '";
@@ -506,9 +575,28 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
 		 System.out.println("\tBooking ID generated: " + Integer.toString(bookingID));
 		 System.out.print("\tEnter Hotel ID: ");
          String hotelID = in.readLine();
-			
+		
+		 int rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ hotelID);
+		 while (rows == 0){
+			System.out.print("\tInvalid Hotel ID. Enter hotel ID: ");
+			hotelID = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select hotelID from hotel where HotelID = "+ hotelID);
+		 }
+	
+		
 		 System.out.print("\tEnter Room Number: ");
          String roomNo = in.readLine();
+		 
+		 rows = 0;
+		 rows = esql.executeQueryNoPrint("Select roomNo from room where roomno = "+ roomNo + " AND HotelID = " + hotelID);
+		 
+		 while (rows == 0){
+			System.out.print("\tInvalid Room No. Enter Room no: ");
+			roomNo = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select roomNo from room where roomno = "+ roomNo + " AND HotelID = " + hotelID);
+		 }
+		 
+		 
 		 
 		 System.out.print("\tEnter Customer's First Name: ");
          String fname = in.readLine();
@@ -516,12 +604,34 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
 		 System.out.print("\tEnter Customer's Last Name: ");
          String lname = in.readLine();
          
-		 String custID = (esql.executeQueryReturnData("Select C.customerID From Customer C where c.fname = '" + fname + "' AND c.lname = '" + lname + "' "));		//
-         
-    
+         rows = 0;
+		 rows = esql.executeQueryNoPrint("Select * from customer where fname = "+ fname + " AND c.lname = " + lname );
 		 
+		 while (rows == 0){
+			System.out.print("\tInvalid Name. ");
+			
+			System.out.print("\tEnter Customer's First Name: ");
+			fname = in.readLine();
+       
+			System.out.print("\tEnter Customer's Last Name: ");
+			lname = in.readLine();
+			
+			roomNo = in.readLine();
+		    rows = esql.executeQueryNoPrint("Select * from customer where fname = "+ fname + " AND c.lname = " + lname );
+		 }
+         
+		 String custID = (esql.executeQueryReturnData("Select C.customerID From Customer C where c.fname = '" + fname + "' AND c.lname = '" + lname + "' "));		//
+  
+  
 		 System.out.print("\tEnter Date of Booking (mm/dd/yyyy):  ");
 		 String bookDate = in.readLine();
+		 
+		     
+         while (bookDate.charAt(2) != '/' || bookDate.charAt(5) != '/'){
+			System.out.print("\tInvalid date format. Enter Date of Birth (mm/dd/yyyy): ");
+			bookDate = in.readLine();
+		 }
+         
 		 
 		 System.out.print("\tEnter number of people staying in room:  ");
 		 String noOfPeople = in.readLine();
@@ -610,7 +720,7 @@ public void executeQueryReturnDataMultiple (String query) throws SQLException {
          int rows = 0;
          //rows = esql.executeQuery("Select * from MaintenanceCompany where name = "+ companyName);
          
-        
+        //   int rows = 0;
 		// int hotelID = esql.executeQuery("Select hotelID from Repair where rID = "+ repairID);
 		 //checking for valid manager in the hotel 
 		// while (rows == 0){
